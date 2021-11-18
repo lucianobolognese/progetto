@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "protocol.h"
+#include <time.h>
 
 
 void error(char *errorMessage) {
@@ -47,8 +48,30 @@ int main(int argc, char *argv[]) {
 	}
 #endif
 
+	char address [15];
+	printf("Insert an address:");
+	gets(address);
+	if (strcmp(address,ADDR)!=0){
+		error("Invalid address");
+	}
+
 	//creazione della socket
 
+	int port;
+	char string_port [5];
+	printf("Insert a port: ");
+	gets(string_port);
+	port=atoi(string_port);
+
+	if (port>=1){
+
+	}
+	else if (port<0){
+		error("error in insert port");
+	}
+	else {
+		port=PROTOPORT;
+	}
 	int c_socket;
 	c_socket= socket(AF_INET, SOCK_STREAM, 0);
 
@@ -58,47 +81,79 @@ int main(int argc, char *argv[]) {
 		clearwinsock();
 		return -1;
 	}
-	else printf("socket creata\n");
 
 	// COSTRUZIONE DELL’INDIRIZZO DEL SERVER
 	struct sockaddr_in sad;
+	int s_socket;
 	memset(&sad, 0, sizeof(sad));
-	int port=PROTOPORT;
+	//int port=PROTOPORT;
 	sad.sin_family = AF_INET;
-	sad.sin_addr.s_addr = inet_addr( "127.0.0.1" ); // IP del server
-	sad.sin_port = htons(port); // Server port
+	sad.sin_addr.s_addr = inet_addr("127.0.0.1"); // IP del server
+	sad.sin_port = port; // Server port
 
 	// CONNESSIONE AL SERVER
 
-/*	int status = */connect(c_socket, (struct sockaddr *)&sad, sizeof(sad));
-/*
+	int status = connect(c_socket, (struct sockaddr *)&sad, sizeof(sad));
+	char  server_response[512];
+
 	if (status == -1)
 	{
 	error( "Failed to connect.\n" );
 	closesocket(c_socket);
 	clearwinsock();
+	system("pause");
+	return 0;
 	}
-*/
-	printf("connessione stabilita alla porta %d\n", port);
-	char  server_response[512];
-	recv(c_socket, server_response, sizeof(server_response),0);
+	else {
+
+	printf("Connection established with %s : %d\n", address, port);
+	memset(&server_response, 0, BUFFERSIZE);
+	recv(c_socket, server_response, BUFFERSIZE,0);
+	}
 
 	// print out server response
-	printf("Il server ha mandato: %s \n", server_response);
-	printf("dioboia");
+	printf("Server:%s\n", server_response);
 
-	//close the socket
-	closesocket(c_socket);
-	printf("Disconnesso dal server.\n");
-	return 0;
-}
+	char input_string1 [512]; //prima stringa std input
+	char input_string2 [512]; //seconda stringa std input
+	char input_string3 [512];
+	char server_string [512]; //risposta server
+	char exit [512]="=";
+	char var [512];
+    int status1;
 
-/*
-	char* input_string = "prova"; // Stringa da inviare
-	int string_len = strlen(input_string); // Determina la lunghezza
+	while(1){
+		memset(&input_string1, 0, sizeof(input_string1));
+		memset(&input_string1, 0, sizeof(input_string2));
+		memset(&input_string1, 0, sizeof(input_string3));
+		printf("Inserisci una stringa: ");
+		scanf("%s",input_string1);
 
+		strcpy(var,input_string1);
+		if(strcmp(var,exit)==0 ){
+			send(c_socket, input_string1, BUFFERSIZE, 0);
+			sleep(0,2);
+			closesocket(c_socket);
+			printf("[+]Client disconnected.\n\n");
+			system("pause");
+			return 0;
+		}
+		scanf("%s",input_string2);
+		scanf("%s",input_string3);
+
+
+	    send(c_socket, input_string1, BUFFERSIZE, 0);
+	    send(c_socket, input_string2, BUFFERSIZE, 0);
+	    send(c_socket, input_string3, BUFFERSIZE, 0);
+	    memset(&server_string, 0, sizeof(server_string));
+	    status1=recv(c_socket,server_string,BUFFERSIZE,0);
+	 	printf("Server:%s\n", &server_string);
+
+
+	}
+	/*
 	// INVIARE DATI AL SERVER
-	if (send(c_socket, input_string, string_len, 0) != string_len)
+	if (send(c_socket, input_string1, sizeof(input_string1), 0) != sizeof(input_string1))
 	{
 	error("send() sent a different number of bytes than expected");
 	closesocket(c_socket);
@@ -106,31 +161,21 @@ int main(int argc, char *argv[]) {
 	return -1;
 	}
 
-	// RICEVERE DATI DAL SERVER
-	int bytes_rcvd;
-	int total_bytes_rcvd = 0;
-	int n;
-	char buf[BUFFERSIZE]; // buffer for data from the server
-	printf("Received: "); // Setup to print the echoed string
-	while (total_bytes_rcvd < string_len) {
+	if (send(c_socket, input_string2, sizeof(input_string2), 0) != sizeof(input_string2))
+		{
+		error("send() sent a different number of bytes than expected");
+		closesocket(c_socket);
+		clearwinsock();
+		return -1;
+		}
+*/
 
-	if ((bytes_rcvd = recv(c_socket, buf, BUFFERSIZE - 1, 0)) <= 0)
-	{
-	error("recv() failed or connection closed prematurely");
-	closesocket(c_socket);
-	clearwinsock();
-	return -1;
-	}
-	total_bytes_rcvd += bytes_rcvd; // Keep tally of total bytes
-	buf[bytes_rcvd] = '\0'; // Add \0 so printf knows where to stop
-	n=read(c_socket, buf, BUFFERSIZE);
-	printf("%s", buf); // Print the echo buffer
-	}
 	// CHIUSURA DELLA CONNESSIONE
 	closesocket(c_socket);
 	clearwinsock();
-	printf("\n"); // Print a final linefeed
+	printf("Disconnesso\n"); // Print a final linefeed
 	system("pause");
 	return(0);
-	}
-*/
+}
+	//close the socket
+
