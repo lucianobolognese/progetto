@@ -10,7 +10,8 @@
 
 #define BUFFERSIZE 512
 #define PROTOPORT 27015
-#define QLEN 6
+#define ADDR "127.0.0.1"
+#define QLEN 5
 #define NO_ERROR 0
 
 struct {
