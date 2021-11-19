@@ -91,7 +91,6 @@ int main(int argc, char *argv[]) {
 
 	// COSTRUZIONE DELL’INDIRIZZO DEL SERVER
 	struct sockaddr_in sad;
-	int s_socket;
 	memset(&sad, 0, sizeof(sad));
 	//int port=PROTOPORT;
 	sad.sin_family = AF_INET;
@@ -127,7 +126,6 @@ int main(int argc, char *argv[]) {
 	char server_string [512]; //risposta server
 	char exit [512]="=";
 	char var [512];
-    int status1;
 
 	while(1){
 		memset(&input_string1, 0, sizeof(input_string1));
@@ -139,7 +137,7 @@ int main(int argc, char *argv[]) {
 		strcpy(var,input_string1);
 		if(strcmp(var,exit)==0 ){
 			send(c_socket, input_string1, BUFFERSIZE, 0);
-			//sleep(0,2);
+			sleep(0,8);
 			closesocket(c_socket);
 			printf("[+]Client disconnected.\n\n");
 			system("pause");
@@ -153,8 +151,8 @@ int main(int argc, char *argv[]) {
 	    send(c_socket, input_string2, BUFFERSIZE, 0);
 	    send(c_socket, input_string3, BUFFERSIZE, 0);
 	    memset(&server_string, 0, sizeof(server_string));
-	    status1=recv(c_socket,server_string,BUFFERSIZE,0);
-	 	printf("Server:%s\n", &server_string);
+	    recv(c_socket,server_string,BUFFERSIZE,0);
+	 	printf("Server:%s\n", server_string);
 
 
 	}
