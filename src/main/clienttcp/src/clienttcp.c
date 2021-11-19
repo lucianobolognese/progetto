@@ -1,7 +1,7 @@
 /*
  ============================================================================
  Name        : clienttcp.c
- Author      : luciano
+ Author      : Luciano Bolognese
  Version     :
  Copyright   : Your copyright notice
  Description : Hello World in C, Ansi-style
@@ -39,7 +39,7 @@ void clearwinsock() {
 
 int main(int argc, char *argv[]) {
 #if defined WIN32
-	// Initialize Winsock
+// Initialize Winsock
 	WSADATA wsa_data;
 	int result = WSAStartup(MAKEWORD(2,2), &wsa_data);
 	if (result != NO_ERROR) {
@@ -51,7 +51,7 @@ int main(int argc, char *argv[]) {
 	char address [15];
 	int port;
 
-	//Taking address as parameter .\clienttcp address port
+//Taking address as parameter .\clienttcp address port
 
 	if (argv[1]>0 && argv[2]>0) {
 		strcpy(address,argv[1]);
@@ -61,35 +61,18 @@ int main(int argc, char *argv[]) {
 		strcpy(address,ADDR);
 		port=PROTOPORT;
 	}
-	/*
-
-	char address [15];
-	printf("Insert an address:");
-	gets(address);
-	if (strcmp(address,ADDR)!=0){
-		error("Invalid address");
-	}
-
-	//creazione della socket
-
-	int port;
-	char string_port [5];
-	printf("Insert a port: ");
-	gets(string_port);
-	port=atoi(string_port);
-*/
 
 	int c_socket;
 	c_socket= socket(AF_INET, SOCK_STREAM, 0);
 
 	if (c_socket < 0) {
-		error("creazione della socket fallita.");
+		error("Socket's creation failed.");
 		closesocket(c_socket);
 		clearwinsock();
 		return -1;
 	}
 
-	// COSTRUZIONE DELL’INDIRIZZO DEL SERVER
+//Building the server's address
 	struct sockaddr_in sad;
 	memset(&sad, 0, sizeof(sad));
 	//int port=PROTOPORT;
@@ -97,7 +80,7 @@ int main(int argc, char *argv[]) {
 	sad.sin_addr.s_addr = inet_addr("127.0.0.1"); // IP del server
 	sad.sin_port = port; // Server port
 
-	// CONNESSIONE AL SERVER
+//Server connection
 
 	int status = connect(c_socket, (struct sockaddr *)&sad, sizeof(sad));
 	char  server_response[512];
@@ -117,13 +100,13 @@ int main(int argc, char *argv[]) {
 	recv(c_socket, server_response, BUFFERSIZE,0);
 	}
 
-	// print out server response
+//Print out server response
 	printf("Server:%s\n", server_response);
 
-	char input_string1 [512]; //prima stringa std input
-	char input_string2 [512]; //seconda stringa std input
+	char input_string1 [512]; //first standard input string
+	char input_string2 [512]; //second standard input string
 	char input_string3 [512];
-	char server_string [512]; //risposta server
+	char server_string [512]; //server response
 	char exit [512]="=";
 	char var [512];
 
@@ -131,13 +114,12 @@ int main(int argc, char *argv[]) {
 		memset(&input_string1, 0, sizeof(input_string1));
 		memset(&input_string1, 0, sizeof(input_string2));
 		memset(&input_string1, 0, sizeof(input_string3));
-		printf("Inserisci una stringa: ");
+		printf("Insert an operation (ex. + 31 12 or '=' to close the calculator): ");
 		scanf("%s",input_string1);
 
 		strcpy(var,input_string1);
 		if(strcmp(var,exit)==0 ){
 			send(c_socket, input_string1, BUFFERSIZE, 0);
-			sleep(0,8);
 			closesocket(c_socket);
 			printf("[+]Client disconnected.\n\n");
 			system("pause");
@@ -156,31 +138,13 @@ int main(int argc, char *argv[]) {
 
 
 	}
-	/*
-	// INVIARE DATI AL SERVER
-	if (send(c_socket, input_string1, sizeof(input_string1), 0) != sizeof(input_string1))
-	{
-	error("send() sent a different number of bytes than expected");
-	closesocket(c_socket);
-	clearwinsock();
-	return -1;
-	}
 
-	if (send(c_socket, input_string2, sizeof(input_string2), 0) != sizeof(input_string2))
-		{
-		error("send() sent a different number of bytes than expected");
-		closesocket(c_socket);
-		clearwinsock();
-		return -1;
-		}
-*/
-
-	// CHIUSURA DELLA CONNESSIONE
+//Closing of connection
 	closesocket(c_socket);
 	clearwinsock();
 	printf("Disconnesso\n"); // Print a final linefeed
 	system("pause");
 	return(0);
 }
-	//close the socket
+
 

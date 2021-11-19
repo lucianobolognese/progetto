@@ -1,10 +1,12 @@
 /*
  ============================================================================
  Name        : servertcp.c
- Author      : luciano
+ Author      : Luciano Bolognese
  Version     :
  Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Description : Server TCP of a calculator that takes numbers in this order:
+ 	 	 	   [OPERATION] [FIRST NUMBER] [SECOND NUMBER]
+ 	 	 	   The connection with a client stop when the client send a "="
  ============================================================================
  */
 
@@ -76,6 +78,8 @@ int chat(int c_socket,int s_socket){
 	memset(&input_string1, 0, sizeof(input_string1));
 	memset(&input_string2, 0, sizeof(input_string2));
 
+	while(1){
+
 
 	recv(c_socket,input_string1,BUFFERSIZE,0);
 	recv(c_socket,input_string2,BUFFERSIZE,0);
@@ -134,11 +138,10 @@ int chat(int c_socket,int s_socket){
 	send(c_socket, server_message, strlen(server_message), 0);
 
 	if(op=='='){
-		closesocket(c_socket);
 		printf("[+]Client disconnected.\n\n");
 		return 0;
 	}
-	return 1;
+	}
 }
 
 
@@ -147,7 +150,7 @@ int main(int argc, char *argv[]) {
 	char server_message[512]="Connection established\n";
 	int port=PROTOPORT;
 	if (argc > 1) {
-		port = atoi(argv[1]); //conver the specified argument to binary
+		port = atoi(argv[1]); //convert the specified argument to binary
 	}
 	else
 		port = PROTOPORT;
@@ -179,13 +182,13 @@ int main(int argc, char *argv[]) {
 	}
 
 
-//assignment of an address to the socket bind()
+//Assignment of an address to the socket bind()
 
 	struct sockaddr_in sad;
-	memset(&sad, 0, sizeof(sad)); //controlla che i bit extra contengono 0
+	memset(&sad, 0, sizeof(sad)); //check that bit extra contain 0
 	sad.sin_family = AF_INET;
 	sad.sin_addr.s_addr = inet_addr( "127.0.0.1" );
-	sad.sin_port = port; //converte l'ordine dei byte nella comunicazione fra host e network
+	sad.sin_port = port; //convert order of byte within comunication through host and network
 	int n;
 
 	n=bind(s_socket, (struct sockaddr*) &sad, sizeof(sad));
@@ -198,6 +201,7 @@ int main(int argc, char *argv[]) {
 
 
 //Setting socket to listen status
+	while(1){
 
 		if (listen (s_socket, QLEN) < 0) {
 			error ("listen() failed.\n");
@@ -209,14 +213,9 @@ int main(int argc, char *argv[]) {
 		struct sockaddr_in cad; // structure for the client address
 		int c_socket; // socket descriptor for the client
 		int client_len; // the size of the client address
-		printf("Aspettando che un Client si connetta...\n");
+		printf("Waiting for a client to connect...\n");
 
-//Accepting a new connection
-
-
-
-//Iterate the chat Client-Server
-		while(1){
+//Iterate the life of server socket
 			c_socket = accept(s_socket, (struct sockaddr*)&cad, &client_len);
 			printf("[+]Client connected.\n");
 
@@ -224,24 +223,12 @@ int main(int argc, char *argv[]) {
 			strcpy(server_message, "Connection established");
 			printf("Server: %s %i\n", server_message,port);
 			send(c_socket, server_message, strlen(server_message), 0);
-			while(1){
-				if(chat(c_socket,s_socket)==0){
-					closesocket(c_socket);
-				}
+
+//Condition of chatting Client-Server
+			if(chat(c_socket,s_socket)==0){
+				continue;
 			}
-		} // end while
+	} //while end
+}//main end
 
-} // main end
 
-/*
-
-	// CHIUSURA DELLA CONNESSIONE
-	printf("Handling client %s\n", inet_ntoa(cad.sin_addr));
-	} // end-while
-
-	closesocket(s_socket);
-	clearwinsock();
-	return 1;
-} // main end
-
-*/
