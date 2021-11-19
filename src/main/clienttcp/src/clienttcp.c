@@ -49,6 +49,21 @@ int main(int argc, char *argv[]) {
 #endif
 
 	char address [15];
+	int port;
+
+	//Taking address as parameter .\clienttcp address port
+
+	if (argv[1]>0 && argv[2]>0) {
+		strcpy(address,argv[1]);
+		port=atoi(argv[2]);
+	}
+	else {
+		strcpy(address,ADDR);
+		port=PROTOPORT;
+	}
+	/*
+
+	char address [15];
 	printf("Insert an address:");
 	gets(address);
 	if (strcmp(address,ADDR)!=0){
@@ -62,16 +77,8 @@ int main(int argc, char *argv[]) {
 	printf("Insert a port: ");
 	gets(string_port);
 	port=atoi(string_port);
+*/
 
-	if (port>=1){
-
-	}
-	else if (port<0){
-		error("error in insert port");
-	}
-	else {
-		port=PROTOPORT;
-	}
 	int c_socket;
 	c_socket= socket(AF_INET, SOCK_STREAM, 0);
 
@@ -132,7 +139,7 @@ int main(int argc, char *argv[]) {
 		strcpy(var,input_string1);
 		if(strcmp(var,exit)==0 ){
 			send(c_socket, input_string1, BUFFERSIZE, 0);
-			sleep(0,2);
+			//sleep(0,2);
 			closesocket(c_socket);
 			printf("[+]Client disconnected.\n\n");
 			system("pause");
