@@ -103,13 +103,14 @@ int chat(int c_socket,int s_socket){
 	{
 	case '+':
 		c=add(a,b);
-		itoa(c,result,10);
+		//itoa(c,result,10);
+		sprintf(result,"%d",c);
 		strcpy(server_message, result);
 		break;
 	case '/':
 		if (b!=0){
 			c=division(a,b);
-			itoa(c,result,10);
+			sprintf(result,"%d",c);
 			strcpy(server_message, result);
 		}
 		else {
@@ -118,12 +119,12 @@ int chat(int c_socket,int s_socket){
 		break;
 	case '*':
 		c=mult(a,b);
-		itoa(c,result,10);
+		sprintf(result,"%d",c);
 		strcpy(server_message, result);
 		break;
 	case '-':
 		c=sub(a,b);
-		itoa(c,result,10);
+		sprintf(result,"%d",c);
 		strcpy(server_message, result);
 		break;
 
