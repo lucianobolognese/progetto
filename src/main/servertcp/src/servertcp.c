@@ -149,15 +149,17 @@ int chat(int c_socket,int s_socket){
 int main(int argc, char *argv[]) {
 
 	char server_message[512]="Connection established\n";
-	int port=PROTOPORT;
-	if (argc > 1) {
-		port = atoi(argv[1]); //convert the specified argument to binary
-	}
-	else
-		port = PROTOPORT;
-	if (port < 0) {
+	int port;
+
+	if (argv[1]>0) {
+			port=atoi(argv[1]);
+		}
+	else if (argv[1]<0) {
 		printf("Wrong port number %s \n", argv[1]);
 		return 0;
+	}
+	else {
+		port=PROTOPORT;
 	}
 #if defined WIN32 // Winsock initialization
 	WSADATA wsa_data;

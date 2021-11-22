@@ -4,7 +4,9 @@
  Author      : Luciano Bolognese
  Version     :
  Copyright   : Your copyright notice
- Description : Hello World in C, Ansi-style
+ Description : Client TCP of a calculator that takes numbers in this order:
+ 	 	 	   [OPERATION] [FIRST NUMBER] [SECOND NUMBER]
+ 	 	 	   The connection with a server stop when the client send a "="
  ============================================================================
  */
 

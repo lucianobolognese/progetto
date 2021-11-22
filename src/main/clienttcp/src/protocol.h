@@ -1,8 +1,8 @@
 /*
- * protocol.h server
+ * protocol.h server TCP
  *
  *  Created on: 4 nov 2021
- *      Author: Luciano
+ *      Author: Luciano Bolognese
  */
 
 #ifndef PROTOCOL_H_
